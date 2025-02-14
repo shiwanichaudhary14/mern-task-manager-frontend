@@ -6,23 +6,27 @@ import PropTypes from "prop-types";
 function Login({ setToken }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState(""); // To show login errors
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  // Set backend URL from environment variables
+  // Ensure backend URL is correctly set
   const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${backendURL}/api/auth/login`, {
-        username,
-        password,
-      });
+      const response = await axios.post(`${backendURL}/api/auth/login`, 
+        { username, password },  
+        { withCredentials: true } // Ensure cookies are sent
+    );
 
       const token = response.data.token;
+      if (!token) throw new Error("No token received from backend");
+
       setToken(token);
       localStorage.setItem("token", token);
-      navigate("/"); // Redirect to home after login
+      console.log("Token stored successfully:", token);
+
+      navigate("/"); // Redirect after login
     } catch (error) {
       setErrorMessage(error.response?.data?.message || "Login failed. Please try again.");
       console.error("Login failed:", error.response?.data || error.message);
@@ -34,12 +38,16 @@ function Login({ setToken }) {
       <h2>Login</h2>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       <input
+        id="username"
+        name="username"
         type="text"
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
       />
       <input
+        id="password"
+        name="password"
         type="password"
         placeholder="Password"
         value={password}
@@ -60,3 +68,4 @@ Login.propTypes = {
 };
 
 export default Login;
+
