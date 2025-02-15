@@ -12,7 +12,8 @@ function Login({ setToken }) {
   // Ensure backend URL is correctly set
   const backendURL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault(); //  Prevents page reload
     try {
       const response = await axios.post(`${backendURL}/api/auth/login`, 
         { username, password },  
@@ -37,6 +38,7 @@ function Login({ setToken }) {
     <div>
       <h2>Login</h2>
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      <form onSubmit={handleLogin}>
       <input
         id="username"
         name="username"
@@ -44,6 +46,7 @@ function Login({ setToken }) {
         placeholder="Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
+        required
       />
       <input
         id="password"
@@ -52,8 +55,10 @@ function Login({ setToken }) {
         placeholder="Password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
-      <button onClick={handleLogin}>Login</button>
+      <button type="submit">Login</button>
+     </form>
       <p>
         Don&apos;t have an account?{" "}
         <button onClick={() => navigate("/register")}>Register</button>
