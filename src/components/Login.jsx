@@ -25,7 +25,7 @@ function Login({ setToken }) {
 
       setToken(token);
       localStorage.setItem("token", token);
-      console.log("Token stored successfully:", token);
+      console.log("Token stored successfully:");
 
       navigate("/"); // Redirect after login
     } catch (error) {
@@ -47,6 +47,7 @@ function Login({ setToken }) {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
+        autoComplete="username"
       />
       <input
         id="password"
